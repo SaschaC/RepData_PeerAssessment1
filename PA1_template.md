@@ -145,7 +145,7 @@ median(total_per_day$total_steps, na.rm = T)
 
 ```r
 average_per_interval <- group_by(dataset_original, interval)%>%summarize(average_steps = mean(steps, na.rm = T))
-plot(average_per_interval$average_steps ~ average_per_interval$interval, type = "l", main = "Average number of steps by interval", xlab = "Interval", ylab = "Average number of steps")
+plot(average_per_interval$average_steps ~ average_per_interval$interval, type = "l", main = "Average number of steps in each interval", xlab = "Interval", ylab = "Average number of steps")
 ```
 
 ![](PA1_template_files/figure-html/unnamed-chunk-6-1.png) 

@@ -29,7 +29,7 @@ median(total_per_day$total_steps, na.rm = T)
 average_per_interval <- group_by(dataset_original, interval)%>%summarize(average_steps = mean(steps, na.rm = T))
 plot(average_per_interval$average_steps ~ set_2$interval, type = "l")
 
-#Which 5-minute interval, on average across all the days in the dataset, contains the maximum number of steps??
+#Which 5-minute interval, on average across all the days in the dataset, contains the maximum number of steps???
 
 filter(average_per_interval, average_steps == max(average_steps))
 

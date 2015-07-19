@@ -52,7 +52,7 @@ median(total_per_day$total_steps, na.rm = T)
 ####1. Make a time series plot (i.e. type = "l") of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all days (y-axis)
 ```{r}
 average_per_interval <- group_by(dataset_original, interval)%>%summarize(average_steps = mean(steps, na.rm = T))
-plot(average_per_interval$average_steps ~ average_per_interval$interval, type = "l", main = "Average number of steps per interval", xlab = "Interval", ylab = "Average number of steps")
+plot(average_per_interval$average_steps ~ average_per_interval$interval, type = "l", main = "Average number of steps by interval", xlab = "Interval", ylab = "Average number of steps")
 ```
 
 ####2. Which 5-minute interval, on average across all the days in the dataset, contains the maximum number of steps?
@@ -66,7 +66,7 @@ filter(average_per_interval, average_steps == max(average_steps))
 ```{r}
 sapply(dataset_original, function(x) length(which(is.na(x))))
 ```
-The number of rows with missing values is 2304. Missing values only occur in the 'steps' column.
+The number of rows with missing values is 2304. The missing values only occur in the 'steps' column.
 
 ####2./3. Devise a strategy for filling in all of the missing values in the dataset. Create a new dataset that is equal to the original dataset but with the missing data filled in.
 ```{r}

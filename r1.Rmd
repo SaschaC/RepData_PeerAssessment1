@@ -1,0 +1,67 @@
+---
+title: "Reproducible Research: Peer Assessment 2"
+output: 
+  html_document:
+    keep_md: true
+---
+```{r, message=FALSE}
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+# Synopsis
+xxxxxxxxxxxxxxxxxxxxxxxxxxxx
+#Data Preprocessing
+
+## Reading in the Data
+If the file doesn't exist yet, it is downloaded. Afterwards it is read in and converted for further use with dplyr-functions:
+```{r, cache = TRUE}
+#if(!fileReadable('repdata-data-StormData.csv.bz2')) {download.file}##!!!!!!!!!!!!!
+setwd("~/Arbeit/courses/coursera/Reproducible Research/Project II")
+
+storm_data_original <- read.csv(bzfile('repdata-data-StormData.csv.bz2'), na.strings=c("", "NA"), stringsAsFactors = FALSE)
+storm_data_original <- tbl_df(storm_data_original)
+```
+# Removing Observations
+Since the analyses will be restricted to the 51 States within the US, data from other regions are excluded. This is done on the basis of state.abb, which is included in the R base package, and which lists 50 states (DC has to be appended):
+```{r, cache = TRUE}
+states <- append(state.abb, "DC")
+storm_data_sub1 <- filter(storm_data_original, STATE %in% states)
+storm_data_sub1$STATE <- factor(storm_data_sub1$STATE)
+```
+Further, data with incomplete information about the damages caused by an event are excluded. The following lines show that CROPDMGEXP and PROPDMGEXP include values that are uninterpretable, such as '?':
+```{r, cache = TRUE}
+storm_data_sub1$CROPDMGEXP<- tolower(storm_data_sub1$CROPDMGEXP)
+unique(storm_data_sub1$CROPDMGEXP)
+
+storm_data_sub1$PROPDMGEXP<- tolower(storm_data_sub1$PROPDMGEXP)
+unique(storm_data_sub1$PROPDMGEXP)
+```
+Since these values are needed to calculate damages caused by events, observations with uninterpretable values in CROPDMGEXP and PROPDMGEXP are excluded from further analyses:
+```{r, cache=TRUE}
+storm_data_sub2 <- filter(storm_data_sub1, !(PROPDMGEXP%in%c("?","0","-","+")|(PROPDMG>0&(is.na(PROPDMGEXP)))))%>% filter(!(CROPDMGEXP%in%c("?", "0")|(CROPDMG>0&(is.na(CROPDMGEXP)))))
+```
+##Cleaning of EVTYPE
+There are 48 official event types according to the storm data documentation, pp.:
+However there are 950 in the data set:
+```{r, cache=TRUE}
+unique(storm_data_sub2$EVTYPE)
+```
+The problem is to map these 950 event types onto the 48 official event types. 
+In a first step, a new column is created, in which all EVTYPE transcriptions are converted to lower case and all non-alphanumeric characters are removed. 
+```{r, cache = TRUE}
+storm_data_sub2$evtype_an <- tolower(storm_data_sub2$EVTYPE)
+storm_data_sub2$evtype_an <- gsub("[^a-zA-Z]", "", storm_data_sub2$evtype_an)
+```
+This reduced the number of event types a bit. In order to map the event types that are left on the 48 official event type categories, the 48 official event types are first loaded in:
+```{r, cache=TRUE}
+official_evtypes <- read.table("correct_evtype.txt", sep = "\t", stringsAsFactors = FALSE)$V1
+```
+We append a categorie 'other' for event types that are not mataching. Moreover, a new column is created, in which the event types are converted to lower case, and all non-alphanumeric characters are removed for better comparison with the event types given in the data base:
+```{r, cache=TRUE}
+official_evtypes<- c(official_evtypes, "other")
+correct_evtype<- data.frame(official_evtype = official_evtypes, official_evtype_an = gsub("[^a-zA-Z]", "", tolower(official_evtypes)), stringsAsFactors =F)
+head(corrct_evtype)
+```
+
+

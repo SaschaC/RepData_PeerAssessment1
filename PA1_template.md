@@ -145,7 +145,7 @@ median(total_per_day$total_steps, na.rm = T)
 
 ```r
 average_per_interval <- group_by(dataset_original, interval)%>%summarize(average_steps = mean(steps, na.rm = T))
-plot(average_per_interval$average_steps ~ average_per_interval$interval, type = "l", main = "Average number of steps per interval", xlab = "Interval", ylab = "Average number of steps")
+plot(average_per_interval$average_steps ~ average_per_interval$interval, type = "l", main = "Average number of steps by interval", xlab = "Interval", ylab = "Average number of steps")
 ```
 
 ![](PA1_template_files/figure-html/unnamed-chunk-6-1.png) 
@@ -175,7 +175,7 @@ sapply(dataset_original, function(x) length(which(is.na(x))))
 ##    steps     date interval 
 ##     2304        0        0
 ```
-The number of rows with missing values is 2304. Missing values only occur in the 'steps' column.
+The number of rows with missing values is 2304. The missing values only occur in the 'steps' column.
 
 ####2./3. Devise a strategy for filling in all of the missing values in the dataset. Create a new dataset that is equal to the original dataset but with the missing data filled in.
 
